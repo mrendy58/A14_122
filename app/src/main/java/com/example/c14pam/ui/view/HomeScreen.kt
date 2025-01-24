@@ -2,11 +2,16 @@ package com.example.c14pam.ui.view
 
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
@@ -35,8 +40,32 @@ object DestinasiHome : DestinasiNavigasi {
 }
 
 @Composable
+fun VillaLayout(
+    villa: List<Villa>,
+    modifier: Modifier = Modifier,
+    onDetailClick: (Villa) -> Unit,
+    onDeleteClick: (Villa) -> Unit = {}
+) {
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(villa) { villa ->
+            VillaCard(
+                villa = villa,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onDetailClick(villa) }, // Fungsi klik untuk detail
+                onDeleteClick = { onDeleteClick(villa) }
+            )
+        }
+    }
+}
+
+@Composable
 fun VillaCard(
-    villa: Villa, // Data mahasiswa
+    villa: Villa, // Data villa
     modifier: Modifier = Modifier,
     onDeleteClick: (Villa) -> Unit = {}
 ) {
@@ -113,6 +142,7 @@ fun VillaCard(
         )
     }
 }
+
 @Composable
 private fun DeleteConfirmationDialog(
     onDeleteConfirm: () -> Unit,
