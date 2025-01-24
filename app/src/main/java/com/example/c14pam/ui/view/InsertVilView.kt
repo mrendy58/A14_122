@@ -5,10 +5,12 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.c14pam.ui.navigation.DestinasiNavigasi
 import com.example.c14pam.ui.viewmodel.InsertVilUiEvent
+import com.example.c14pam.ui.viewmodel.InsertVilUiState
 
 
 object DestinasiEntryVilla : DestinasiNavigasi {
@@ -19,6 +21,37 @@ object DestinasiEntryVilla : DestinasiNavigasi {
 }
 
 
+@Composable
+fun EntryBody(
+    insertVilUiState: InsertVilUiState,
+    onSiswaValueChange: (InsertVilUiEvent) -> Unit,
+    onSaveClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        // Form input
+        FormInput(
+            insertVilUiEvent = insertVilUiState.insertVilUiEvent,
+            onValueChange = onSiswaValueChange,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // Tombol Simpan dengan warna biru
+        Button(
+            onClick = onSaveClick,
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF2196F3), // Warna biru
+                contentColor = Color.White // Warna teks putih
+            )
+        ) {
+            Text("Simpan")
+        }
+    }
+}
 
 @Composable
 fun FormInput(
