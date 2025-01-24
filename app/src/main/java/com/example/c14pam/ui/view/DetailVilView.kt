@@ -34,6 +34,7 @@ object DestinasiVilDetail : DestinasiNavigasi {
 fun DetailVilScreen(
     navigateBack: () -> Unit,
     navigateToEdit: (String) -> Unit,
+    navigateToReservasi: () -> Unit, // Fungsi untuk navigasi ke halaman reservasi
     modifier: Modifier = Modifier,
     viewModel: DetailVilViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
@@ -41,12 +42,11 @@ fun DetailVilScreen(
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            // AppBar dengan warna biru
             TopAppBar(
                 title = {
                     Text(
                         text = DestinasiVilDetail.titleRes,
-                        color = Color.White // Warna teks putih
+                        color = Color.White
                     )
                 },
                 navigationIcon = {
@@ -54,25 +54,24 @@ fun DetailVilScreen(
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Kembali",
-                            tint = Color.White // Warna ikon putih
+                            tint = Color.White
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF2196F3) // Warna biru
+                    containerColor = Color(0xFF2196F3)
                 )
             )
         },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    // Panggil navigateToEdit dengan id_villa
                     navigateToEdit(viewModel.detailVilUiState.detailVilUiEvent.id_villa)
                 },
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier.padding(18.dp),
-                containerColor = Color(0xFF2196F3), // Warna biru
-                contentColor = Color.White // Warna ikon putih
+                containerColor = Color(0xFF2196F3),
+                contentColor = Color.White
             ) {
                 Icon(
                     imageVector = Icons.Default.Edit,
@@ -81,11 +80,12 @@ fun DetailVilScreen(
             }
         },
         bottomBar = {
-            BottomNavigationMenu() // Menggunakan komponen BottomNavigationMenu
+            BottomNavigationMenu()
         }
     ) { innerPadding ->
         BodyDetailVla(
             detailVilUiState = viewModel.detailVilUiState,
+            navigateToReservasi = navigateToReservasi, // Meneruskan fungsi navigasi ke BodyDetailVla
             modifier = Modifier.padding(innerPadding)
         )
     }
@@ -94,6 +94,7 @@ fun DetailVilScreen(
 @Composable
 fun BodyDetailVla(
     detailVilUiState: DetailVilUiState,
+    navigateToReservasi: () -> Unit, // Fungsi untuk navigasi ke halaman reservasi
     modifier: Modifier = Modifier
 ) {
     when {
@@ -126,6 +127,19 @@ fun BodyDetailVla(
                     villa = detailVilUiState.detailVilUiEvent.toVilla(),
                     modifier = modifier
                 )
+                // Tombol Reservasi
+                Button(
+                    onClick = navigateToReservasi,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp), // Padding atas dikurangi
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF2196F3), // Warna biru
+                        contentColor = Color.White // Warna teks putih
+                    )
+                ) {
+                    Text("Reservasi")
+                }
             }
         }
     }
@@ -137,24 +151,24 @@ fun ItemDetailVla(
     villa: Villa
 ) {
     Card(
-        modifier = modifier.fillMaxWidth().padding(top = 20.dp),
+        modifier = modifier.fillMaxWidth().padding(top = 16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White, // Warna latar belakang kartu putih
-            contentColor = Color.Black // Warna teks hitam
-        )
+            containerColor = Color(0xFFDCEEFA), // Warna biru muda transparan
+            contentColor = Color.Black
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp) // Menambahkan shadow
     ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
         ) {
-            ComponentDetailVla(judul = "Id Villa", isi = villa.id_villa, titleColor = Color(0xFF2196F3)) // Warna biru
-            Spacer(modifier = Modifier.padding(4.dp))
-            ComponentDetailVla(judul = "Nama Villa", isi = villa.nama_villa, titleColor = Color(0xFF2196F3)) // Warna biru
-            Spacer(modifier = Modifier.padding(4.dp))
-            ComponentDetailVla(judul = "Alamat", isi = villa.alamat, titleColor = Color(0xFF2196F3)) // Warna biru
-            Spacer(modifier = Modifier.padding(4.dp))
-            ComponentDetailVla(judul = "Kamar Tersedia", isi = villa.kamar_tersedia, titleColor = Color(0xFF2196F3)) // Warna biru
-            Spacer(modifier = Modifier.padding(4.dp))
+            ComponentDetailVla(judul = "Id Villa", isi = villa.id_villa, titleColor = Color(0xFF2196F3))
+            Spacer(modifier = Modifier.padding(8.dp))
+            ComponentDetailVla(judul = "Nama Villa", isi = villa.nama_villa, titleColor = Color(0xFF2196F3))
+            Spacer(modifier = Modifier.padding(8.dp))
+            ComponentDetailVla(judul = "Alamat", isi = villa.alamat, titleColor = Color(0xFF2196F3))
+            Spacer(modifier = Modifier.padding(8.dp))
+            ComponentDetailVla(judul = "Kamar Tersedia", isi = villa.kamar_tersedia, titleColor = Color(0xFF2196F3))
         }
     }
 }
@@ -164,23 +178,24 @@ fun ComponentDetailVla(
     modifier: Modifier = Modifier,
     judul: String,
     isi: String,
-    titleColor: Color = Color.Gray // Default warna abu-abu untuk judul
+    titleColor: Color = Color.Gray
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.Start
     ) {
         Text(
-            text = "$judul : ",
-            fontSize = 20.sp,
+            text = judul,
+            fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
-            color = titleColor // Menggunakan warna judul yang dikirim
+            color = titleColor
         )
         Text(
             text = isi,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black // Tulisan isi berwarna hitam
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Normal,
+            color = Color.Black,
+            modifier = Modifier.padding(top = 4.dp)
         )
     }
 }
