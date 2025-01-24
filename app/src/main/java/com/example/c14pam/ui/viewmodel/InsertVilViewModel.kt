@@ -1,12 +1,21 @@
 package com.example.c14pam.ui.viewmodel
 
 
-import InsertVilUiEvent
-import InsertVilUiState
 import com.example.c14pam.model.Villa
 
 
+// Data class untuk menyimpan state UI
+data class InsertVilUiState(
+    val insertVilUiEvent: InsertVilUiEvent = InsertVilUiEvent()
+)
 
+// Data class untuk menyimpan event input dari UI
+data class InsertVilUiEvent(
+    val id_villa: String = "",
+    val nama_villa: String = "",
+    val alamat: String = "",
+    val kamar_tersedia: String = ""
+)
 
 // Ekstensi fungsi untuk mengkonversi InsertVilUiEvent ke objek Villa
 fun InsertVilUiEvent.toVilla(): Villa = Villa(
