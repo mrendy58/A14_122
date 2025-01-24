@@ -11,6 +11,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.c14pam.model.Villa
 import com.example.c14pam.ui.navigation.DestinasiNavigasi
+import com.example.c14pam.ui.viewmodel.DetailVilUiState
+import com.example.c14pam.ui.viewmodel.toVilla
 
 
 object DestinasiVilDetail : DestinasiNavigasi {
@@ -18,6 +20,46 @@ object DestinasiVilDetail : DestinasiNavigasi {
     const val ID_VILLA = "id_villa"
     override val titleRes = "Detail Villa"
     val routeWithArg = "$route/{$ID_VILLA}"
+}
+
+@Composable
+fun BodyDetailVla(
+    detailVilUiState: DetailVilUiState,
+    modifier: Modifier = Modifier
+) {
+    when {
+        detailVilUiState.isLoading -> {
+            Box(
+                modifier = modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+        detailVilUiState.isError -> {
+            Box(
+                modifier = modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = detailVilUiState.errorMessage,
+                    color = Color.Red
+                )
+            }
+        }
+        detailVilUiState.isUiEventNotEmpty -> {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                ItemDetailVla(
+                    villa = detailVilUiState.detailVilUiEvent.toVilla(),
+                    modifier = modifier
+                )
+            }
+        }
+    }
 }
 
 @Composable
