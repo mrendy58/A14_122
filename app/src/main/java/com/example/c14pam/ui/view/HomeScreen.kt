@@ -2,11 +2,13 @@ package com.example.c14pam.ui.view
 
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,7 +18,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,20 +33,122 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.c14pam.R
 import com.example.c14pam.model.Villa
 import com.example.c14pam.ui.navigation.DestinasiNavigasi
 import com.example.c14pam.ui.viewmodel.HomeUiState
+import com.example.c14pam.ui.viewmodel.HomeViewModel
+import com.example.c14pam.ui.viewmodel.PenyediaViewModel
 
 
 // Objek untuk mendefinisikan rute dan judul layar home
 object DestinasiHome : DestinasiNavigasi {
     override val route = "home" // Rute navigasi layar home
     override val titleRes = "Villa Untukmu"
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeScreen(
+    navigateToItemEntry: () -> Unit,
+    modifier: Modifier = Modifier,
+    onDetailClick: (String) -> Unit = {},
+    viewModel: HomeViewModel = viewModel(factory = PenyediaViewModel.Factory)
+) {
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    var searchQuery by remember { mutableStateOf("") } // State untuk menyimpan query pencarian
+
+    Scaffold(
+        modifier = modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+            .background(Color.White), // Latar belakang layar putih
+        topBar = {
+            // AppBar dengan warna biru
+            TopAppBar(
+                title = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        // TextField untuk pencarian
+                        TextField(
+                            value = searchQuery,
+                            onValueChange = { searchQuery = it },
+                            placeholder = {
+                                Text(
+                                    text = "Cari villa...",
+                                    color = Color.Gray
+                                )
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Search,
+                                    contentDescription = "Search",
+                                    tint = Color.Gray
+                                )
+                            },
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent
+                            ),
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(50.dp) // Mengatur tinggi TextField
+                                .padding(bottom = 1.dp, end = 8.dp) // Padding di sisi bawah dan kanan
+                                .background(Color.White, MaterialTheme.shapes.small)
+                                .clip(MaterialTheme.shapes.small)
+                        )
+                        // Icon notifikasi
+                        Icon(
+                            imageVector = Icons.Default.Notifications,
+                            contentDescription = "Notifications",
+                            tint = Color.White,
+                            modifier = Modifier
+                                .padding(start = 15.dp,end = 12.dp)
+                                .size(28.dp)
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xFF2196F3) // Warna biru
+                ),
+                scrollBehavior = scrollBehavior
+            )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = navigateToItemEntry,
+                shape = MaterialTheme.shapes.medium,
+                modifier = Modifier.padding(18.dp),
+                contentColor = Color.White,
+                containerColor = Color(0xFF2196F3) // Warna biru
+            ) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Add Villa")
+            }
+        },
+        bottomBar = {
+            BottomNavigationMenu()
+        }
+    ) { innerPadding ->
+        HomeStatus(
+            homeUiState = viewModel.vlaUiState,
+            retryAction = { viewModel.getVla() },
+            modifier = Modifier.padding(innerPadding),
+            onDetailClick = onDetailClick,
+            onDeleteClick = { villa ->
+                viewModel.deleteVla(villa.id_villa)
+            }
+        )
+    }
 }
 
 @Composable
