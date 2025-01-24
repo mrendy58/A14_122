@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import com.example.c14pam.R
 import com.example.c14pam.model.Villa
 import com.example.c14pam.ui.navigation.DestinasiNavigasi
+import com.example.c14pam.ui.viewmodel.HomeUiState
 
 
 // Objek untuk mendefinisikan rute dan judul layar home
@@ -42,6 +43,37 @@ object DestinasiHome : DestinasiNavigasi {
     override val route = "home" // Rute navigasi layar home
     override val titleRes = "Villa Untukmu"
 }
+
+@Composable
+fun HomeStatus(
+    homeUiState: HomeUiState, // Status data villa
+    retryAction: () -> Unit, // Aksi untuk memuat ulang
+    modifier: Modifier = Modifier,
+    onDeleteClick: (Villa) -> Unit = {},
+    onDetailClick: (String) -> Unit
+) {
+    when (homeUiState) {
+        is HomeUiState.Loading -> OnLoading(modifier = modifier.fillMaxSize()) // Menampilkan loading
+        is HomeUiState.Success -> {
+            if (homeUiState.villa.isEmpty()) {
+                // Tampilkan pesan jika data kosong
+                Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(text = "Tidak ada data Villa")
+                }
+            } else {
+                // Tampilkan daftar mahasiswa
+                VillaLayout(
+                    villa = homeUiState.villa,
+                    modifier = modifier.fillMaxWidth(),
+                    onDetailClick = { onDetailClick(it.id_villa) }, // Mengarahkan ke detail
+                    onDeleteClick = { onDeleteClick(it) }
+                )
+            }
+        }
+        is HomeUiState.Error -> OnError(retryAction, modifier = modifier.fillMaxSize()) // Tampilkan pesan error
+    }
+}
+
 @Composable
 fun OnLoading(
     modifier: Modifier
