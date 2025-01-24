@@ -10,11 +10,13 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.c14pam.ui.view.DestinasiEntryVilla
 import com.example.c14pam.ui.view.DestinasiHome
+import com.example.c14pam.ui.view.DestinasiReservasi // Tambahkan ini
 import com.example.c14pam.ui.view.DestinasiVilDetail
 import com.example.c14pam.ui.view.DestinasiVilUpdate
 import com.example.c14pam.ui.view.DetailVilScreen
 import com.example.c14pam.ui.view.EntryVilScreen
 import com.example.c14pam.ui.view.HomeScreen
+import com.example.c14pam.ui.view.ReservasiScreen // Tambahkan ini
 import com.example.c14pam.ui.view.UpdateVilScreen
 
 @Composable
@@ -70,6 +72,9 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
                     },
                     navigateToEdit = { idVilla ->
                         navController.navigate("${DestinasiVilUpdate.route}/$idVilla")
+                    },
+                    navigateToReservasi = {
+                        navController.navigate("${DestinasiReservasi.route}/$idVilla") // Navigasi ke reservasi
                     }
                 )
             }
@@ -89,6 +94,25 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
                 UpdateVilScreen(
                     onBack = { navController.popBackStack() },
                     onNavigate = { navController.popBackStack() }
+                )
+            }
+        }
+
+        // Halaman Reservasi
+        composable(
+            DestinasiReservasi.routeWithArg,
+            arguments = listOf(
+                navArgument(DestinasiReservasi.ID_VILLA) {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            val idVilla = backStackEntry.arguments?.getString(DestinasiReservasi.ID_VILLA)
+            idVilla?.let {
+                ReservasiScreen(
+                    navigateBack = {
+                        navController.popBackStack()
+                    }
                 )
             }
         }
