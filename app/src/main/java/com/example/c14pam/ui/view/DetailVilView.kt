@@ -1,17 +1,24 @@
 package com.example.c14pam.ui.view
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.c14pam.model.Villa
 import com.example.c14pam.ui.navigation.DestinasiNavigasi
 import com.example.c14pam.ui.viewmodel.DetailVilUiState
+import com.example.c14pam.ui.viewmodel.DetailVilViewModel
+import com.example.c14pam.ui.viewmodel.PenyediaViewModel
 import com.example.c14pam.ui.viewmodel.toVilla
 
 
@@ -20,6 +27,68 @@ object DestinasiVilDetail : DestinasiNavigasi {
     const val ID_VILLA = "id_villa"
     override val titleRes = "Detail Villa"
     val routeWithArg = "$route/{$ID_VILLA}"
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DetailVilScreen(
+    navigateBack: () -> Unit,
+    navigateToEdit: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: DetailVilViewModel = viewModel(factory = PenyediaViewModel.Factory)
+) {
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    Scaffold(
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            // AppBar dengan warna biru
+            TopAppBar(
+                title = {
+                    Text(
+                        text = DestinasiVilDetail.titleRes,
+                        color = Color.White // Warna teks putih
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = navigateBack) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Kembali",
+                            tint = Color.White // Warna ikon putih
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xFF2196F3) // Warna biru
+                )
+            )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    // Panggil navigateToEdit dengan id_villa
+                    navigateToEdit(viewModel.detailVilUiState.detailVilUiEvent.id_villa)
+                },
+                shape = MaterialTheme.shapes.medium,
+                modifier = Modifier.padding(18.dp),
+                containerColor = Color(0xFF2196F3), // Warna biru
+                contentColor = Color.White // Warna ikon putih
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = "Edit Villa"
+                )
+            }
+        },
+        bottomBar = {
+            BottomNavigationMenu() // Menggunakan komponen BottomNavigationMenu
+        }
+    ) { innerPadding ->
+        BodyDetailVla(
+            detailVilUiState = viewModel.detailVilUiState,
+            modifier = Modifier.padding(innerPadding)
+        )
+    }
 }
 
 @Composable
