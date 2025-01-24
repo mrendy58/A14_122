@@ -5,15 +5,26 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.c14pam.ui.navigation.DestinasiNavigasi
 import com.example.c14pam.ui.viewmodel.InsertVilUiEvent
 import com.example.c14pam.ui.viewmodel.InsertVilUiState
+import com.example.c14pam.ui.viewmodel.PenyediaViewModel
+import com.example.c14pam.ui.viewmodel.UpdateVilViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 object DestinasiVilUpdate : DestinasiNavigasi {
@@ -21,6 +32,60 @@ object DestinasiVilUpdate : DestinasiNavigasi {
     override val titleRes = "Update Villa"
     const val ID_VILLA = "id_villa"
     val routesWithArg = "$route/{$ID_VILLA}"
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun UpdateVilScreen(
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    onNavigate: () -> Unit,
+    viewModel: UpdateVilViewModel = viewModel(factory = PenyediaViewModel.Factory)
+) {
+    val coroutineScope = rememberCoroutineScope()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
+    Scaffold(
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            // AppBar dengan warna biru
+            TopAppBar(
+                title = {
+                    Text(
+                        text = DestinasiVilUpdate.titleRes,
+                        color = Color.White // Warna teks putih
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Kembali",
+                            tint = Color.White // Warna ikon putih
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xFF2196F3) // Warna biru
+                )
+            )
+        }
+    ) { padding ->
+        UpdateBody(
+            modifier = Modifier.padding(padding),
+            insertVilUiState = viewModel.updateVilUiState,
+            onVillaValueChange = viewModel::updateInsertVilState,
+            onSaveClick = {
+                coroutineScope.launch {
+                    viewModel.updateVil()
+                    delay(600)
+                    withContext(Dispatchers.Main) {
+                        onNavigate()
+                    }
+                }
+            }
+        )
+    }
 }
 
 @Composable
