@@ -19,3 +19,10 @@ data class Reservasi(
     val check_out: String,
     val jumlah_kamar: String
 )
+
+@Serializable
+data class Pelanggan(
+    val id_pelanggan: String,
+    val nama_pelanggan: String,
+    val no_hp: String
+)

@@ -10,10 +10,17 @@ import com.example.c14pam.RsvVillaApplication
 
 object PenyediaViewModel{
     val Factory = viewModelFactory{
+        // View Model Villa
         initializer { HomeViewModel(RsvVillaApplication().container.villaRepository) }
         initializer { InsertVilViewModel(RsvVillaApplication().container.villaRepository) }
         initializer { UpdateVilViewModel( createSavedStateHandle(),RsvVillaApplication().container.villaRepository) }
         initializer { DetailVilViewModel( createSavedStateHandle(),RsvVillaApplication().container.villaRepository) }
+
+        // View Model Reservasi
+        initializer { ReservasiViewModel(RsvVillaApplication().container.resevRepository) }
+        initializer { InsertResViewModel(RsvVillaApplication().container.resevRepository) }
+        initializer { UpdateResViewModel( createSavedStateHandle(),RsvVillaApplication().container.resevRepository) }
+        initializer { DetailResViewModel( createSavedStateHandle(),RsvVillaApplication().container.resevRepository) }
 
     }
 }
