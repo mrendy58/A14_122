@@ -22,6 +22,18 @@ object PenyediaViewModel{
         initializer { UpdateResViewModel( createSavedStateHandle(),RsvVillaApplication().container.resevRepository) }
         initializer { DetailResViewModel( createSavedStateHandle(),RsvVillaApplication().container.resevRepository) }
 
+        // View Model Pelanggan
+        initializer { PelangganViewModel(RsvVillaApplication().container.pelangganRepository) }
+        initializer { InsertPelViewModel(RsvVillaApplication().container.pelangganRepository) }
+        initializer { UpdatePelViewModel( createSavedStateHandle(),RsvVillaApplication().container.pelangganRepository) }
+        initializer { DetailPelViewModel( createSavedStateHandle(),RsvVillaApplication().container.pelangganRepository) }
+
+        // View Model Reservasi
+        initializer { ReviewViewModel(RsvVillaApplication().container.reviewRepository) }
+        initializer { InsertRevViewModel(RsvVillaApplication().container.reviewRepository) }
+        initializer { UpdateRevViewModel( createSavedStateHandle(),RsvVillaApplication().container.reviewRepository) }
+        initializer { DetailRevViewModel( createSavedStateHandle(),RsvVillaApplication().container.reviewRepository) }
+
     }
 }
     fun CreationExtras.RsvVillaApplication(): RsvVillaApplication =
