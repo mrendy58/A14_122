@@ -1,5 +1,8 @@
 package com.example.c14pam.repository
 
+import com.example.c14pam.service.PelangganService
+import com.example.c14pam.service.ResevService
+import com.example.c14pam.service.ReviewService
 import com.example.c14pam.service.VillaService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
@@ -10,6 +13,9 @@ import retrofit2.Retrofit
 // Ini adalah bagian dari pola Dependency Injection (DI) untuk memisahkan pembuatan objek dari penggunaannya.
 interface AppContainer {
     val villaRepository: VillaRepository // Properti untuk menyediakan instance VillaRepository
+    val resevRepository: ResevRepository // Properti untuk menyediakan instance ResevRepository
+    val pelangganRepository: PelangganRepository // Properti untuk menyediakan instance PelangganRepository
+    val reviewRepository: ReviewRepository // Properti untuk menyediakan instance ReviewRepository
 }
 
 // Implementasi dari AppContainer yang menyediakan instance VillaRepository.
@@ -32,10 +38,28 @@ class RsvVillaContainer : AppContainer {
     private val villaService: VillaService by lazy {
         retrofit.create(VillaService::class.java) // Membuat instance VillaService menggunakan Retrofit.
     }
+    private val resevService: ResevService by lazy {
+        retrofit.create(ResevService::class.java) // Membuat instance ResevService menggunakan Retrofit.
+    }
+    private val pelangganService: PelangganService by lazy {
+        retrofit.create(PelangganService::class.java) // Membuat instance PelangganService menggunakan Retrofit.
+    }
+    private val reviewService: ReviewService by lazy {
+        retrofit.create(ReviewService::class.java) // Membuat instance ReviewService menggunakan Retrofit.
+    }
 
     // Lazy initialization untuk VillaRepository.
     // NetworkVillaRepository adalah implementasi dari VillaRepository yang menggunakan VillaService.
     override val villaRepository: VillaRepository by lazy {
         NetworkVillaRepository(villaService) // Membuat instance NetworkVillaRepository dengan VillaService.
+    }
+    override val resevRepository: ResevRepository by lazy {
+        NetworkResevRepository(resevService) // Membuat instance NetworkResevRepository dengan ReservasiService.
+    }
+    override val pelangganRepository: PelangganRepository by lazy {
+        NetworkPelRepository(pelangganService) // Membuat instance NetworkPelRepository dengan PelangganService.
+    }
+    override val reviewRepository: ReviewRepository by lazy {
+        NetworkReviewRepository(reviewService) // Membuat instance NetworkReviewRepository dengan ReviewService.
     }
 }

@@ -21,7 +21,6 @@ import com.example.c14pam.ui.viewmodel.DetailVilViewModel
 import com.example.c14pam.ui.viewmodel.PenyediaViewModel
 import com.example.c14pam.ui.viewmodel.toVilla
 
-
 object DestinasiVilDetail : DestinasiNavigasi {
     override val route = "detail"
     const val ID_VILLA = "id_villa"
@@ -34,7 +33,7 @@ object DestinasiVilDetail : DestinasiNavigasi {
 fun DetailVilScreen(
     navigateBack: () -> Unit,
     navigateToEdit: (String) -> Unit,
-    navigateToReservasi: () -> Unit, // Fungsi untuk navigasi ke halaman reservasi
+    navigateToReservasi: (String) -> Unit, // Fungsi untuk navigasi ke halaman reservasi
     modifier: Modifier = Modifier,
     viewModel: DetailVilViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
@@ -83,18 +82,41 @@ fun DetailVilScreen(
             BottomNavigationMenu()
         }
     ) { innerPadding ->
-        BodyDetailVla(
-            detailVilUiState = viewModel.detailVilUiState,
-            navigateToReservasi = navigateToReservasi, // Meneruskan fungsi navigasi ke BodyDetailVla
-            modifier = Modifier.padding(innerPadding)
-        )
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+        ) {
+            // BodyDetailVla tanpa Modifier.weight(1f)
+            BodyDetailVla(
+                detailVilUiState = viewModel.detailVilUiState,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            // Tombol Reservasi di bagian bawah
+            Button(
+                onClick = {
+                    println("Tombol Reservasi Diklik")
+                    println("ID Reservasi: ${viewModel.detailVilUiState.detailVilUiEvent.id_villa}")
+                    navigateToReservasi(viewModel.detailVilUiState.detailVilUiEvent.id_villa)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF2196F3),
+                    contentColor = Color.White
+                )
+            ) {
+                Text(text = "Reservasi")
+            }
+        }
     }
 }
 
 @Composable
 fun BodyDetailVla(
     detailVilUiState: DetailVilUiState,
-    navigateToReservasi: () -> Unit, // Fungsi untuk navigasi ke halaman reservasi
     modifier: Modifier = Modifier
 ) {
     when {
@@ -127,19 +149,6 @@ fun BodyDetailVla(
                     villa = detailVilUiState.detailVilUiEvent.toVilla(),
                     modifier = modifier
                 )
-                // Tombol Reservasi
-                Button(
-                    onClick = navigateToReservasi,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp), // Padding atas dikurangi
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF2196F3), // Warna biru
-                        contentColor = Color.White // Warna teks putih
-                    )
-                ) {
-                    Text("Reservasi")
-                }
             }
         }
     }
@@ -151,7 +160,9 @@ fun ItemDetailVla(
     villa: Villa
 ) {
     Card(
-        modifier = modifier.fillMaxWidth().padding(top = 16.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp), // Padding di luar card
         colors = CardDefaults.cardColors(
             containerColor = Color(0xFFDCEEFA), // Warna biru muda transparan
             contentColor = Color.Black
@@ -160,7 +171,7 @@ fun ItemDetailVla(
     ) {
         Column(
             modifier = Modifier
-                .padding(16.dp)
+                .padding(16.dp) // Padding di dalam card
         ) {
             ComponentDetailVla(judul = "Id Villa", isi = villa.id_villa, titleColor = Color(0xFF2196F3))
             Spacer(modifier = Modifier.padding(8.dp))
