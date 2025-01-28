@@ -72,6 +72,10 @@ object DestinasiPelanggan : DestinasiNavigasi {
 @Composable
 fun PelangganScreen(
     navigateToEntryPelanggan: () -> Unit,
+    navigateToHome: () -> Unit,
+    navigateToReservasi: () -> Unit,
+    navigateToPelanggan: () -> Unit,
+    navigateToReview: () -> Unit,
     modifier: Modifier = Modifier,
     onDetailPelClick: (String) -> Unit = {},
     viewModel: PelangganViewModel = viewModel(factory = PenyediaViewModel.Factory)
@@ -151,7 +155,12 @@ fun PelangganScreen(
             }
         },
         bottomBar = {
-            BottomNavigationMenu()
+            BottomNavigationMenu(
+                onHomeClick = navigateToHome,
+                onReservasiClick = navigateToReservasi,
+                onPelangganClick = navigateToPelanggan,
+                onReviewClick = navigateToReview
+            )
         }
     ) { innerPadding ->
         PelangganStatus(

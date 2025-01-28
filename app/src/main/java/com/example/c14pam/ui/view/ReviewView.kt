@@ -74,6 +74,10 @@ object DestinasiReview : DestinasiNavigasi {
 @Composable
 fun ReviewScreen(
     navigateToEntryReview: () -> Unit,
+    navigateToHome: () -> Unit,
+    navigateToReservasi: () -> Unit,
+    navigateToPelanggan: () -> Unit,
+    navigateToReview: () -> Unit,
     modifier: Modifier = Modifier,
     onDetailRevClick: (String) -> Unit = {},
     viewModel: ReviewViewModel = viewModel(factory = PenyediaViewModel.Factory)
@@ -153,7 +157,12 @@ fun ReviewScreen(
             }
         },
         bottomBar = {
-            BottomNavigationMenu()
+            BottomNavigationMenu(
+                onHomeClick = navigateToHome,
+                onReservasiClick = navigateToReservasi,
+                onPelangganClick = navigateToPelanggan,
+                onReviewClick = navigateToReview
+            )
         }
     ) { innerPadding ->
         ReviewStatus(

@@ -39,6 +39,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.c14pam.R
 import com.example.c14pam.model.Villa
 import com.example.c14pam.ui.navigation.DestinasiNavigasi
@@ -59,10 +60,33 @@ fun HomeScreen(
     navigateToItemEntry: () -> Unit,
     modifier: Modifier = Modifier,
     onDetailClick: (String) -> Unit = {},
-    viewModel: HomeViewModel = viewModel(factory = PenyediaViewModel.Factory)
+    viewModel: HomeViewModel = viewModel(factory = PenyediaViewModel.Factory),
+    navController: NavHostController // Tambahkan NavController untuk navigasi
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     var searchQuery by remember { mutableStateOf("") } // State untuk menyimpan query pencarian
+
+    // Fungsi navigasi untuk BottomNavigationMenu
+    val onHomeClick = {
+        navController.navigate(DestinasiHome.route) {
+            popUpTo(DestinasiHome.route) { inclusive = true }
+        }
+    }
+    val onReservasiClick = {
+        navController.navigate(DestinasiReservasi.route) {
+            popUpTo(DestinasiHome.route) { inclusive = false }
+        }
+    }
+    val onPelangganClick = {
+        navController.navigate(DestinasiPelanggan.route) {
+            popUpTo(DestinasiHome.route) { inclusive = false }
+        }
+    }
+    val onReviewClick = {
+        navController.navigate(DestinasiReview.route) {
+            popUpTo(DestinasiHome.route) { inclusive = false }
+        }
+    }
 
     Scaffold(
         modifier = modifier
@@ -113,7 +137,7 @@ fun HomeScreen(
                             contentDescription = "Notifications",
                             tint = Color.White,
                             modifier = Modifier
-                                .padding(start = 15.dp,end = 12.dp)
+                                .padding(start = 15.dp, end = 12.dp)
                                 .size(28.dp)
                         )
                     }
@@ -136,7 +160,13 @@ fun HomeScreen(
             }
         },
         bottomBar = {
-            BottomNavigationMenu()
+            // Tambahkan BottomNavigationMenu di sini
+            BottomNavigationMenu(
+                onHomeClick = onHomeClick,
+                onReservasiClick = onReservasiClick,
+                onPelangganClick = onPelangganClick,
+                onReviewClick = onReviewClick
+            )
         }
     ) { innerPadding ->
         HomeStatus(

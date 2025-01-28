@@ -44,6 +44,10 @@ object DestinasiDetailPel : DestinasiNavigasi {
 fun DetailPelScreen(
     navigateBack: () -> Unit,
     navigateToEditPel: () -> Unit,
+    navigateToHome: () -> Unit, // Fungsi untuk navigasi ke halaman Home
+    navigateToReservasi: () -> Unit, // Fungsi untuk navigasi ke halaman Reservasi
+    navigateToPelanggan: () -> Unit, // Fungsi untuk navigasi ke halaman Pelanggan
+    navigateToReview: () -> Unit, // Fungsi untuk navigasi ke halaman Review
     modifier: Modifier = Modifier,
     viewModel: DetailPelViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
@@ -69,6 +73,14 @@ fun DetailPelScreen(
                     contentDescription = "Edit Pelanggan"
                 )
             }
+        },
+        bottomBar = {
+            BottomNavigationMenu(
+                onHomeClick = navigateToHome,
+                onReservasiClick = navigateToReservasi,
+                onPelangganClick = navigateToPelanggan,
+                onReviewClick = navigateToReview
+            )
         }
     ) { innerPadding ->
         BodyDetailPel(

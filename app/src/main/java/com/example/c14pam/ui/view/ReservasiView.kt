@@ -72,6 +72,10 @@ object DestinasiReservasi : DestinasiNavigasi {
 @Composable
 fun ResevScreen(
     navigateToEntryReservasi: () -> Unit,
+    navigateToHome: () -> Unit,
+    navigateToReservasi: () -> Unit,
+    navigateToPelanggan: () -> Unit,
+    navigateToReview: () -> Unit,
     modifier: Modifier = Modifier,
     onDetailResClick: (String) -> Unit = {},
     viewModel: ReservasiViewModel = viewModel(factory = PenyediaViewModel.Factory)
@@ -151,7 +155,12 @@ fun ResevScreen(
             }
         },
         bottomBar = {
-            BottomNavigationMenu()
+            BottomNavigationMenu(
+                onHomeClick = navigateToHome,
+                onReservasiClick = navigateToReservasi,
+                onPelangganClick = navigateToPelanggan,
+                onReviewClick = navigateToReview
+            )
         }
     ) { innerPadding ->
         ResevStatus(

@@ -33,7 +33,10 @@ object DestinasiVilDetail : DestinasiNavigasi {
 fun DetailVilScreen(
     navigateBack: () -> Unit,
     navigateToEdit: (String) -> Unit,
-    navigateToReservasi: (String) -> Unit, // Fungsi untuk navigasi ke halaman reservasi
+    navigateToReservasi: (String) -> Unit,
+    navigateToHome: () -> Unit, // Fungsi untuk navigasi ke halaman Home
+    navigateToPelanggan: () -> Unit, // Fungsi untuk navigasi ke halaman Pelanggan
+    navigateToReview: () -> Unit, // Fungsi untuk navigasi ke halaman Review
     modifier: Modifier = Modifier,
     viewModel: DetailVilViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
@@ -79,7 +82,12 @@ fun DetailVilScreen(
             }
         },
         bottomBar = {
-            BottomNavigationMenu()
+            BottomNavigationMenu(
+                onHomeClick = navigateToHome,
+                onReservasiClick = { navigateToReservasi(viewModel.detailVilUiState.detailVilUiEvent.id_villa) },
+                onPelangganClick = navigateToPelanggan,
+                onReviewClick = navigateToReview
+            )
         }
     ) { innerPadding ->
         Column(

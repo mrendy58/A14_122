@@ -46,10 +46,16 @@ object DestinasiDetailRes: DestinasiNavigasi {
 fun DetailResScreen(
     navigateBack: () -> Unit,
     navigateToEditRes: () -> Unit,
+    navigateToHome: () -> Unit,
+    navigateToReservasi: () -> Unit,
+    navigateToPelanggan: () -> Unit,
+    navigateToReview: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: DetailResViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val currentRoute = DestinasiDetailRes.route // Ambil rute saat ini
+
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -68,9 +74,17 @@ fun DetailResScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.Edit,
-                    contentDescription = "Delete Reservasi"
+                    contentDescription = "Edit Reservasi"
                 )
             }
+        },
+        bottomBar = {
+            BottomNavigationMenu(
+                onHomeClick = navigateToHome,
+                onReservasiClick = navigateToReservasi,
+                onPelangganClick = navigateToPelanggan,
+                onReviewClick = navigateToReview
+            )
         }
     ) { innerPadding ->
         BodyDetailRes(
